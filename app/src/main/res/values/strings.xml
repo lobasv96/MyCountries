@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MyCountries</string>
+    <string name="write_country">Введите название страны:</string>
+    <string name="find">Найти</string>
+    <string name="capital">Столица:</string>
+    <string name="region">Регион:</string>
+</resources>
