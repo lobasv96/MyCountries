@@ -1,22 +1,19 @@
-package com.example.mycountries
+package com.example.mycountries.presentation.screens
 
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.view.View.VISIBLE
-import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
-import com.example.mycountries.api.ApiFactory.service
+import com.example.mycountries.*
+import com.example.mycountries.data.api.Retrofit
 import com.example.mycountries.databinding.ActivityMainBinding
-import com.example.mycountries.pojo.Country
-import com.squareup.picasso.Picasso
+import com.example.mycountries.domain.pojo.Country
 import kotlinx.coroutines.launch
-import java.net.URL
+import kotlin.concurrent.thread
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,25 +25,30 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val provider = ViewModelProviders.of(this)
-        val countriesViewModel = provider.get(CountriesViewModel::class.java)
+        val mainViewModel = provider.get(MainViewModel::class.java)
 
 
         binding.buttonFind.setOnClickListener {
             val countryName = binding.editTextCountryName.text.toString()
 
             lifecycleScope.launch {
-                val countries: List<Country> = service.getCountriesByName(countryName)
+                binding.progressBar.isVisible = true
+                binding.buttonFind.isEnabled = false
+                val countries: List<Country> = Retrofit.service.getCountriesByName(countryName)
                 val country = countries[0]
 
                 binding.textViewCountryName.text = country.name
                 binding.textViewRegion.text = country.region
                 binding.textViewCapital.text = country.capital
-                binding.textViewArea.text = countriesViewModel.formatNumber(country.area)
-                binding.textViewPopulation.text = countriesViewModel.formatNumber(country.population)
-                binding.textViewLanguage.text = countriesViewModel.converterListLanguageToString(country.languages)
-                binding.textViewCurrency.text = countriesViewModel.converterListCurrencyToString(country.currencies)
-                countriesViewModel.loadImage(binding.imageViewFlag, country.flag)
+                binding.textViewArea.text = formatNumber(country.area)
+                binding.textViewPopulation.text = formatNumber(country.population)
+                binding.textViewLanguage.text = converterListLanguageToString(country.languages)
+                binding.textViewCurrency.text = converterListCurrencyToString(country.currencies)
+
+                mainViewModel.loadImage(binding.imageViewFlag, country.flag)
                 binding.layoutResult.visibility = View.VISIBLE
+                binding.buttonFind.isEnabled = true
+                binding.progressBar.isVisible = false
             }
         }
     }

@@ -1,10 +1,11 @@
-package com.example.mycountries.api
+package com.example.mycountries.data.api
 
-import com.example.mycountries.pojo.Country
+import androidx.lifecycle.LiveData
+import com.example.mycountries.domain.pojo.Country
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface ApiService {
+interface GetCountriesApi {
     @GET("name/{name}")
     suspend fun getCountriesByName(@Path("name") cityName: String) : List<Country>
 }

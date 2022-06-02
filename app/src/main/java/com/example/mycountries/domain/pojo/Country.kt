@@ -1,7 +1,4 @@
-package com.example.mycountries.pojo
-
-import android.widget.ImageView
-import java.util.*
+package com.example.mycountries.domain.pojo
 
 data class Country (
     val name: String,
